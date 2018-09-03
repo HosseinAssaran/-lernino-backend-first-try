@@ -1,0 +1,21 @@
+[
+{
+  "model": "courses.course",
+  "pk": 2,
+  "fields": {
+    "title": "CourseA",
+    "iconAddr": "https:",
+    "relAddr": "http://",
+    "numInRow": 1
+  }
+},
+{
+  "model": "courses.lesson",
+  "pk": 2,
+  "fields": {
+    "course": 2,
+    "title": "Lesson1",
+    "relAddr": "http://"
+  }
+}
+]
