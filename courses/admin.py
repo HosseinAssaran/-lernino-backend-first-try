@@ -1,24 +1,30 @@
 from django.contrib import admin
 
-from .models import Course, Lesson, Page
+from .models import Course, Lesson, Part
 
 
 class LessonInLine(admin.StackedInline):
     model = Lesson
 
-class PageInLine(admin.StackedInline):
-    model = Page
+
+class PartInLine(admin.StackedInline):
+    model = Part
+
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['title']
+    readonly_fields = ('relative_address',)
     inlines = [LessonInLine]
+
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     list_display = ['title']
-    inlines = [PageInLine]
+    readonly_fields = ('relative_address',)
+    inlines = [PartInLine]
 
-@admin.register(Page)
-class FlashCardAdmin(admin.ModelAdmin):
-    list_display = ['key']
+
+@admin.register(Part)
+class PartAdmin(admin.ModelAdmin):
+    list_display = ['title']
