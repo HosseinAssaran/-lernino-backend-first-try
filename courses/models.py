@@ -74,11 +74,14 @@ class Lesson(BaseModel):
 
 
 class Part(BaseModel):
-    ICON_CHOICES = [('md-play', 'Reading'), ('md-help', 'Question')]
+    ICON_CHOICES = [('md-arrow-dropleft', 'Reading'), ('md-help-buoy', 'Question')]
     lesson = models.ForeignKey('Lesson', related_name='parts', on_delete=models.CASCADE)
     title = models.CharField(max_length=100, blank=True)
     icon = models.CharField(choices=ICON_CHOICES, max_length=50, default=1)
     text = models.TextField(null=True)
+
+    class Meta:
+        ordering = ('-id',)
 
     def __str__(self):
         return self.title
