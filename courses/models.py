@@ -25,7 +25,7 @@ class Course(BaseModel):
     relative_address = models.CharField(max_length=256, null=True, blank=True)
     number_in_row = models.IntegerField(choices=SORT_CHOICES, default=1)
     created = models.DateTimeField(auto_now_add=True, null=True)
-    order_id = models.IntegerField(default=0, unique=True)
+    order_id = models.IntegerField(default=0, blank=False, null=False)
     icon = models.ImageField(upload_to=course_icon_directory, null=True)
 
     class Meta:
@@ -58,7 +58,7 @@ class Lesson(BaseModel):
     course = models.ForeignKey('Course', related_name='lessons', on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=100)
     relative_address = models.CharField(max_length=256, blank=True)
-    order_id = models.IntegerField(default=0, unique=True)
+    order_id = models.IntegerField(default=0, blank=False, null=False)
 
     class Meta:
         ordering = ('order_id',)
@@ -79,9 +79,11 @@ class Part(BaseModel):
     title = models.CharField(max_length=100, blank=True)
     icon = models.CharField(choices=ICON_CHOICES, max_length=50, default=1)
     text = models.TextField(null=True)
+    order_id = models.IntegerField(default=0, blank=False, null=False)
+
 
     class Meta:
-        ordering = ('-id',)
+        ordering = ('-order_id',)
 
     def __str__(self):
         return self.title

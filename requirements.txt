@@ -1,4 +1,5 @@
+jango-admin-sortable2
 gunicorn
 pillow
 djangorestframework
-django
+Django

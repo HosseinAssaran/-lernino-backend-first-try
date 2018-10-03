@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'courses',
+    'adminsortable2',
     # 'categories',
     # 'categories.editor',
 ]
