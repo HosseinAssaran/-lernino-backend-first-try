@@ -53,16 +53,16 @@ class SingleCourseApiView(APIView):
 
 
 class LessonApiView(APIView):
-    def get(self, request, order_id):
-        course = Course.objects.get(order_id=order_id)
+    def get(self, request, pk):
+        course = Course.objects.get(pk=pk)
         lessons = course.lessons.all()
         serializer = LessonSerializer(lessons, many=True)
         return Response(data=serializer.data)
 
 
 class PartApiView(APIView):
-    def get(self, request, order_id):
-        lesson = Lesson.objects.get(order_id=order_id)
+    def get(self, request, pk):
+        lesson = Lesson.objects.get(pk=pk)
         parts = lesson.parts.all()
         serializer = PartSerializer(parts, many=True)
         return Response(data=serializer.data)

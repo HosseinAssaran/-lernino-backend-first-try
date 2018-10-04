@@ -45,7 +45,9 @@ class Course(BaseModel):
     def save(self):
         # if self.order_id != self.__original_order_id:
         #     super(Course, self).save()
-        self.relative_address = '/api/' + str(self.order_id) + '/lessons/'
+        if not self.pk:
+            super(Course, self).save()
+        self.relative_address = '/api/courses/' + str(self.pk)
         if self.icon != self.__original_icon:
             super(Course, self).save()
             self.icon_address = self.icon.url
@@ -67,9 +69,9 @@ class Lesson(BaseModel):
         return self.title
 
     def save(self):
-        # if not self.id:
-        #     super(Lesson, self).save()
-        self.relative_address = '/api/' + str(self.order_id) + '/parts/'
+        if not self.pk:
+            super(Lesson, self).save()
+        self.relative_address = '/api/lessons/' + str(self.pk)
         super(Lesson, self).save()
 
 
@@ -80,7 +82,6 @@ class Part(BaseModel):
     icon = models.CharField(choices=ICON_CHOICES, max_length=50, default=1)
     text = models.TextField(null=True)
     order_id = models.IntegerField(default=0, blank=False, null=False)
-
 
     class Meta:
         ordering = ('-order_id',)

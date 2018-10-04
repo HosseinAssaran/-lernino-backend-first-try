@@ -17,14 +17,14 @@ class PartInLine(SortableInlineAdminMixin, admin.StackedInline):
 
 @admin.register(Course)
 class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ['title', 'order_id', 'created']
+    list_display = ['title', 'order_id', 'relative_address', 'created']
     readonly_fields = ('relative_address', 'icon_address')
     inlines = [LessonInLine]
 
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['title', 'course', 'order_id']
+    list_display = ['title', 'course', 'order_id', 'relative_address']
     readonly_fields = ('relative_address',)
     inlines = [PartInLine]
 
