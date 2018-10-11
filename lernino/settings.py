@@ -82,8 +82,12 @@ WSGI_APPLICATION = 'lernino.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('_DB_NAME', 'lernino'),
+        'USER': os.getenv('_DB_USER', 'root'),
+        'PASSWORD': os.getenv('_DB_PASS', 'root'),
+        'HOST': os.getenv('_DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('_DB_PORT', '3306')
     }
 }
 

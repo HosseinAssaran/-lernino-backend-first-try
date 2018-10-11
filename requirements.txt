@@ -1,5 +1,7 @@
-jango-admin-sortable2
+django-admin-sortable2
 gunicorn
 pillow
 djangorestframework
 Django
+mysqlclient==1.3.12
+

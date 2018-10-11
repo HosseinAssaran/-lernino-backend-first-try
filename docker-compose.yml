@@ -1,0 +1,27 @@
+version: '2'
+services:
+ db:
+    restart: always
+    image: percona:5.7.19
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=lernino
+      - MYSQL_USER=lernino
+      - MYSQL_PASSWORD=lernino
+    volumes:
+      - ../storage/lernino-backend/mysql:/var/lib/mysql
+
+ lernino:
+    build: .
+    ports:
+      - 9091:9000
+    links:
+      - db
+    environment:
+      - _DB_NAME=lernino
+      - _DB_USER=lernino
+      - _DB_PASS=lernino
+      - _DB_HOST=db
+      - _DB_PORT=3306
+    volumes:
+      - ../storage/lernino-backend/media:/var/www/media
