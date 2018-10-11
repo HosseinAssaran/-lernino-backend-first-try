@@ -1,0 +1,10 @@
+stages:
+    - deploy
+
+production:
+    stage: deploy
+    script:
+        - ssh -tt deploy@172.16.200.14 "cd /docker/lernino-backend && git pull && docker-compose -f docker-compose.yml up --build -d"
+    only:
+        - master
+    environment: production
