@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'courses',
     'adminsortable2',
+    'admin_reorder',
     # 'categories',
     # 'categories.editor',
 ]
@@ -54,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'lernino.urls'
@@ -137,3 +140,11 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+ADMIN_REORDER = (
+    # Keep original label and models
+    'sites',
+    # Rename and reorder app model
+    {'app': 'courses', 'label': 'lernino', 'models': ('courses.School', 'courses.Course', 'courses.Lesson')},
+    # Reorder auth models
+    {'app': 'auth', 'models': ('auth.User', 'auth.Group')},
+)
