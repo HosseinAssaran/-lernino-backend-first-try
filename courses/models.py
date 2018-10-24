@@ -18,8 +18,21 @@ def course_icon_directory(self, filename):
     return 'course_icon/{0}'.format(filename)
 
 
+class School(BaseModel):
+    title = models.CharField(max_length=100, null=True, default=None)
+    relative_address = models.CharField(max_length=256, null=True, blank=True, default=None)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.title
+
+
 class Course(BaseModel):
     SORT_CHOICES = [(1, 'Alone'), (2, 'With other'), (3, 'With 2 other')]
+    school = models.ForeignKey('School', related_name='courses', on_delete=models.CASCADE, null=True, default=None)
     title = models.CharField(max_length=100)
     icon_address = models.CharField(max_length=256, null=True, blank=True)
     relative_address = models.CharField(max_length=256, null=True, blank=True)
@@ -28,7 +41,7 @@ class Course(BaseModel):
     order_id = models.IntegerField(default=0, blank=False, null=False)
     icon = models.ImageField(upload_to=course_icon_directory, null=True)
 
-    class Meta:
+    class Meta(object):
         ordering = ('order_id',)
 
     def __str__(self):
@@ -58,11 +71,12 @@ class Course(BaseModel):
 
 class Lesson(BaseModel):
     course = models.ForeignKey('Course', related_name='lessons', on_delete=models.CASCADE, null=True)
+    # school = models.ForeignKey('School', related_name='lessons_school', on_delete=models.CASCADE, null=True, default=None)
     title = models.CharField(max_length=100)
     relative_address = models.CharField(max_length=256, blank=True)
-    order_id = models.IntegerField(default=0, blank=False, null=False)
+    order_id = models.PositiveIntegerField(default=0, blank=False, null=False)
 
-    class Meta:
+    class Meta(object):
         ordering = ('order_id',)
 
     def __str__(self):
@@ -70,9 +84,18 @@ class Lesson(BaseModel):
 
     def save(self):
         if not self.pk:
+            # related_lessons = Lesson.objects.filter(course=self.course)
+            # last_lesson = related_lessons.order_by('-order_id')[0]
+            # self.order_id = last_lesson.order_id + 1
             super(Lesson, self).save()
-        self.relative_address = '/api/lessons/' + str(self.pk)
+            self.relative_address = '/api/lessons/' + str(self.pk)
+        # course = Course.objects.get(pk=self.course.pk)
+        # self.school = course.school
         super(Lesson, self).save()
+
+    @property
+    def school(self):
+        return self.course.school
 
 
 class Part(BaseModel):
@@ -83,8 +106,16 @@ class Part(BaseModel):
     text = models.TextField(null=True)
     order_id = models.IntegerField(default=0, blank=False, null=False)
 
-    class Meta:
-        ordering = ('-order_id',)
+    class Meta(object):
+        ordering = ('order_id',)
 
     def __str__(self):
         return self.title
+
+    # def save(self):
+    #     if not self.pk:
+    #         related_parts = Part.objects.filter(lesson=self.lesson)
+    #         last_part = related_parts.order_by('-order_id')[0]
+    #         self.order_id = last_part.order_id + 1
+    #         super(Part, self).save()
+    #     super(Part, self).save()
