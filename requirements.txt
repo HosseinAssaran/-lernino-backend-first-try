@@ -1,5 +1,5 @@
 #Replace this to get modified version from GitHub, Until new release keep this.
--e git+https://github.com/jrief/django-admin-sortable2@154c3cfc6a3f7ac43d4b6a95001bd20652c24751#django-admin-sortable2==0.6.21
+-e git+https://github.com/jrief/django-admin-sortable2@154c3cfc6a3f7ac43d4b6a95001bd20652c24751#egg=django-admin-sortable2
 
 gunicorn
 pillow
