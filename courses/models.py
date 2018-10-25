@@ -22,12 +22,19 @@ class School(BaseModel):
     title = models.CharField(max_length=100, null=True, default=None)
     relative_address = models.CharField(max_length=256, null=True, blank=True, default=None)
     created = models.DateTimeField(auto_now_add=True, null=True)
+    order_id = models.IntegerField(default=0, blank=False, null=False)
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('order_id',)
 
     def __str__(self):
         return self.title
+
+    def save(self):
+        if not self.pk:
+            super(School, self).save()
+            self.relative_address = '/api/schools/' + str(self.pk)
+        super(School, self).save()
 
 
 class Course(BaseModel):
@@ -60,7 +67,7 @@ class Course(BaseModel):
         #     super(Course, self).save()
         if not self.pk:
             super(Course, self).save()
-        self.relative_address = '/api/courses/' + str(self.pk)
+            self.relative_address = '/api/courses/' + str(self.pk)
         if self.icon != self.__original_icon:
             super(Course, self).save()
             self.icon_address = self.icon.url
