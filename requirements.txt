@@ -1,10 +1,10 @@
 #Replace this to get modified version from GitHub, Until new release keep this.
 -e git+https://github.com/jrief/django-admin-sortable2@154c3cfc6a3f7ac43d4b6a95001bd20652c24751#egg=django-admin-sortable2
 
-gunicorn
-pillow
-djangorestframework
-Django
+gunicorn==19.9.0
+pillow==5.2.0
+djangorestframework==3.8.2
+Django==2.1.1
 mysqlclient==1.3.12
 django-jet==1.0.8
 django-modeladmin-reorder==0.3.1

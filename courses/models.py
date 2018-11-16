@@ -18,6 +18,10 @@ def course_icon_directory(self, filename):
     return 'course_icon/{0}'.format(filename)
 
 
+def parts_image(self, filename):
+    return 'parts_image/{0}'.format(filename)
+
+
 class School(BaseModel):
     title = models.CharField(max_length=100, null=True, default=None)
     relative_address = models.CharField(max_length=256, null=True, blank=True, default=None)
@@ -112,6 +116,7 @@ class Part(BaseModel):
     title = models.CharField(max_length=100, blank=True)
     icon = models.CharField(choices=ICON_CHOICES, max_length=50, default=1)
     text = models.TextField(null=True)
+    image = models.ImageField(upload_to=parts_image, null=True, default=None)
     order_id = models.IntegerField(default=0, blank=False, null=False)
 
     class Meta(object):
