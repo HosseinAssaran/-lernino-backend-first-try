@@ -116,7 +116,7 @@ class Part(BaseModel):
     title = models.CharField(max_length=100, blank=True)
     icon = models.CharField(choices=ICON_CHOICES, max_length=50, default=1)
     text = models.TextField(null=True)
-    image = models.ImageField(upload_to=parts_image, null=True, default=None)
+    image = models.ImageField(upload_to=parts_image, null=True, default=None, blank=True)
     order_id = models.IntegerField(default=0, blank=False, null=False)
 
     class Meta(object):
