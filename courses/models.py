@@ -1,5 +1,7 @@
 from django.db import models
 from django.http import Http404
+from django.conf import settings
+import os
 
 
 class BaseModel(models.Model):
@@ -15,11 +17,19 @@ class BaseModel(models.Model):
 
 
 def course_icon_directory(self, filename):
-    return 'course_icon/{0}'.format(filename)
+    if not self.pk:
+        icon_id = None
+    else:
+        icon_id = self.pk
+    return 'course_icon/IcnC{0}_{1}'.format(icon_id, filename)
 
 
 def parts_image(self, filename):
-    return 'parts_image/{0}'.format(filename)
+    if not self.pk:
+        image_id = None
+    else:
+        image_id = self.pk
+    return 'parts_image/ImgL{0}_{1}'.format(image_id, filename)
 
 
 class School(BaseModel):
@@ -45,7 +55,6 @@ class Course(BaseModel):
     SORT_CHOICES = [(1, 'Alone'), (2, 'With other'), (3, 'With 2 other')]
     school = models.ForeignKey('School', related_name='courses', on_delete=models.CASCADE, null=True, default=None)
     title = models.CharField(max_length=100)
-    icon_address = models.CharField(max_length=256, null=True, blank=True)
     relative_address = models.CharField(max_length=256, null=True, blank=True)
     number_in_row = models.IntegerField(choices=SORT_CHOICES, default=1)
     created = models.DateTimeField(auto_now_add=True, null=True)
@@ -58,26 +67,16 @@ class Course(BaseModel):
     def __str__(self):
         return self.title
 
-    __original_icon = None
-    # __original_order_id = None
-
-    def __init__(self, *args, **kwargs):
-        super(Course, self).__init__(*args, **kwargs)
-        self.__original_icon = self.icon
-        # self.__original_order_id = self.order_id
-
     def save(self):
-        # if self.order_id != self.__original_order_id:
-        #     super(Course, self).save()
         if not self.pk:
             super(Course, self).save()
             self.relative_address = '/api/courses/' + str(self.pk)
-        if self.icon != self.__original_icon:
-            super(Course, self).save()
-            self.icon_address = self.icon.url
+            initial_path = self.icon.path
+            filename = self.icon.name.split('None')
+            self.icon.name = filename[0] + str(self.pk) + filename[1]
+            new_path = settings.MEDIA_ROOT + '/' + self.icon.name
+            os.rename(initial_path, new_path)
         super(Course, self).save()
-        self.__original_icon = self.icon
-        # self.__original_order_id = self.order_id
 
 
 class Lesson(BaseModel):
@@ -95,13 +94,8 @@ class Lesson(BaseModel):
 
     def save(self):
         if not self.pk:
-            # related_lessons = Lesson.objects.filter(course=self.course)
-            # last_lesson = related_lessons.order_by('-order_id')[0]
-            # self.order_id = last_lesson.order_id + 1
             super(Lesson, self).save()
             self.relative_address = '/api/lessons/' + str(self.pk)
-        # course = Course.objects.get(pk=self.course.pk)
-        # self.school = course.school
         super(Lesson, self).save()
 
     @property
@@ -125,10 +119,12 @@ class Part(BaseModel):
     def __str__(self):
         return self.title
 
-    # def save(self):
-    #     if not self.pk:
-    #         related_parts = Part.objects.filter(lesson=self.lesson)
-    #         last_part = related_parts.order_by('-order_id')[0]
-    #         self.order_id = last_part.order_id + 1
-    #         super(Part, self).save()
-    #     super(Part, self).save()
+    def save(self):
+        if not self.pk:
+            super(Part, self).save()
+            initial_path = self.image.path
+            filename = self.image.name.split('None')
+            self.image.name = filename[0] + str(self.pk) + filename[1]
+            new_path = settings.MEDIA_ROOT + '/' + self.image.name
+            os.rename(initial_path, new_path)
+        super(Part, self).save()

@@ -7,7 +7,7 @@ from .models import School, Course, Lesson, Part
 class CourseInLine(SortableInlineAdminMixin, admin.TabularInline):
     show_change_link = True
     model = Course
-    readonly_fields = ('relative_address', 'created', 'icon_address')
+    readonly_fields = ('relative_address', 'created',)
     extra = 1
 
 
@@ -35,7 +35,7 @@ class SchoolAdmin(SortableAdminMixin, admin.ModelAdmin):
 @admin.register(Course)
 class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ['title', 'school', 'relative_address', 'created']
-    readonly_fields = ('relative_address', 'icon_address')
+    readonly_fields = ('relative_address', )
     inlines = (LessonInLine,)
 
 
