@@ -71,11 +71,12 @@ class Course(BaseModel):
         if not self.pk:
             super(Course, self).save()
             self.relative_address = '/api/courses/' + str(self.pk)
-            initial_path = self.icon.path
-            filename = self.icon.name.split('None')
-            self.icon.name = filename[0] + str(self.pk) + filename[1]
-            new_path = settings.MEDIA_ROOT + '/' + self.icon.name
-            os.rename(initial_path, new_path)
+            if self.icon:
+                initial_path = self.icon.path
+                filename = self.icon.name.split('None')
+                self.icon.name = filename[0] + str(self.pk) + filename[1]
+                new_path = settings.MEDIA_ROOT + '/' + self.icon.name
+                os.rename(initial_path, new_path)
         super(Course, self).save()
 
 
@@ -122,9 +123,10 @@ class Part(BaseModel):
     def save(self):
         if not self.pk:
             super(Part, self).save()
-            initial_path = self.image.path
-            filename = self.image.name.split('None')
-            self.image.name = filename[0] + str(self.pk) + filename[1]
-            new_path = settings.MEDIA_ROOT + '/' + self.image.name
-            os.rename(initial_path, new_path)
+            if self.image:
+                initial_path = self.image.path
+                filename = self.image.name.split('None')
+                self.image.name = filename[0] + str(self.pk) + filename[1]
+                new_path = settings.MEDIA_ROOT + '/' + self.image.name
+                os.rename(initial_path, new_path)
         super(Part, self).save()
