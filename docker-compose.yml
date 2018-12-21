@@ -9,8 +9,8 @@ services:
       - MYSQL_USER=lernino
       - MYSQL_PASSWORD=lernino
     volumes:
-      - ../storage/lernino-backend/mysql:/var/lib/mysql
-
+      - ../storage/lernino-backend/mysql-new2:/var/lib/mysql
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
  lernino:
     build: .
     ports:
@@ -24,4 +24,4 @@ services:
       - _DB_HOST=db
       - _DB_PORT=3306
     volumes:
-      - ../storage/lernino-backend/media:/var/www/media
+      - ../storage/lernino-backend/media-new2:/var/www/media
