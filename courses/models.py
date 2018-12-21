@@ -59,6 +59,7 @@ class Course(BaseModel):
     number_in_row = models.IntegerField(choices=SORT_CHOICES, default=1)
     created = models.DateTimeField(auto_now_add=True, null=True)
     order_id = models.IntegerField(default=0, blank=False, null=False)
+    lessons_count = models.IntegerField(default=0, blank=False, null=True)
     icon = models.ImageField(upload_to=course_icon_directory, null=True)
 
     class Meta(object):

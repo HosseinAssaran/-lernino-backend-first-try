@@ -34,7 +34,7 @@ class SchoolAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 @admin.register(Course)
 class CourseAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ['title', 'school', 'relative_address', 'created']
+    list_display = ['title', 'school', 'lessons_count', 'relative_address', 'created']
     readonly_fields = ('relative_address', )
     inlines = (LessonInLine,)
 
