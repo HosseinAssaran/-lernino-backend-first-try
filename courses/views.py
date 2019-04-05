@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from courses.serializers import CourseSerializer, LessonSerializer, PartSerializer
+from courses.serializers import SchoolSerializer, CourseSerializer, LessonSerializer, PartSerializer
 from .models import School, Course, Lesson
 
 
@@ -69,3 +69,16 @@ class PartApiView(APIView):
         parts = lesson.parts.all()
         serializer = PartSerializer(parts, many=True)
         return Response(data=serializer.data)
+
+
+class AllSchoolsApiView(APIView):
+    def get(self, request):
+        schools = School.objects.all()
+        serializer = SchoolSerializer(schools, many=True)
+        return Response(data=serializer.data)
+
+
+# class SchoolsApiView(APIView):
+# def get(self, request, pk):
+    #     serializer = SchoolSerializer(School.get_or_fail_by_pk(pk))
+    #     return Response(data=serializer.data)

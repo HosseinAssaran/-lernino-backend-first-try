@@ -2,6 +2,7 @@ from django.contrib import admin
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
 from .models import School, Course, Lesson, Part
+from django import forms
 
 
 class CourseInLine(SortableInlineAdminMixin, admin.TabularInline):
@@ -25,8 +26,24 @@ class PartInLine(SortableInlineAdminMixin, admin.StackedInline):
     extra = 0
 
 
+class SchoolForm(forms.ModelForm):
+    class Meta:
+        model = School
+        fields = '__all__'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        app_last_version = cleaned_data.get("app_last_version")
+        app_address = cleaned_data.get("app_address")
+
+        if app_last_version and not app_address:
+            msg = "Must be filled if app last version filled."
+            self.add_error('app_address', msg)
+
+
 @admin.register(School)
 class SchoolAdmin(SortableAdminMixin, admin.ModelAdmin):
+    form = SchoolForm
     list_display = ['title', 'relative_address']
     readonly_fields = ('relative_address',)
     inlines = [CourseInLine]

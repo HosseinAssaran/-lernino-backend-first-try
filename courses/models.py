@@ -34,7 +34,12 @@ def parts_image(self, filename):
 
 class School(BaseModel):
     title = models.CharField(max_length=100, null=True, default=None)
+    slug = models.CharField(max_length=10, null=True, default=None)
     relative_address = models.CharField(max_length=256, null=True, blank=True, default=None)
+    app_last_version = models.CharField(max_length=256, null=True, blank=True, default=None)
+    app_support_version = models.CharField(max_length=256, null=True, blank=True, default=None)
+    app_address = models.CharField(max_length=256, null=True, blank=True, default=None)
+    app_update_message = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     order_id = models.IntegerField(default=0, blank=False, null=False)
 
@@ -131,3 +136,4 @@ class Part(BaseModel):
                 new_path = settings.MEDIA_ROOT + '/' + self.image.name
                 os.rename(initial_path, new_path)
         super(Part, self).save()
+
