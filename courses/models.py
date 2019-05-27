@@ -15,6 +15,13 @@ class BaseModel(models.Model):
         except Exception as e:
             raise Http404('Not Exist')
 
+    @classmethod
+    def get_or_fail_by_domain(cls, domain):
+        try:
+            return cls.objects.get(slug=domain)
+        except Exception as e:
+            raise Http404('Not Exist')
+
 
 def course_icon_directory(self, filename):
     if not self.pk:

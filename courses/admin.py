@@ -3,6 +3,7 @@ from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin
 
 from .models import School, Course, Lesson, Part
 from django import forms
+from .utility import version_compare
 
 
 class CourseInLine(SortableInlineAdminMixin, admin.TabularInline):
@@ -34,8 +35,11 @@ class SchoolForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         app_last_version = cleaned_data.get("app_last_version")
+        app_support_version = cleaned_data.get("app_support_version")
         app_address = cleaned_data.get("app_address")
-
+        if version_compare(app_support_version, app_last_version) == 1:
+            msg = "App support version Must be less than or equal to App last version."
+            self.add_error('app_support_version', msg)
         if app_last_version and not app_address:
             msg = "Must be filled if app last version filled."
             self.add_error('app_address', msg)

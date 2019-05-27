@@ -1,14 +1,15 @@
 # from django.shortcuts import render
-from django.http import HttpResponse
 # from django.http import Http404
 from django.core import serializers
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseBadRequest
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from courses.serializers import SchoolSerializer, CourseSerializer, LessonSerializer, PartSerializer
+from .serializers import SchoolSerializer, CourseSerializer, LessonSerializer, PartSerializer
 from .models import School, Course, Lesson
+from .utility import version_compare
+import sys
 
 
 # @csrf_exempt
@@ -45,9 +46,50 @@ from .models import School, Course, Lesson
 #         serializer = SchoolSerializer(School.objects.all(), many=True)
 #         return Response(data=serializer.data)
 
+def get_school(request):
+    school_domain = request.META.get('HTTP_SCHOOL', None)
+    if not school_domain:
+        return None
+    else:
+        return School.get_or_fail_by_domain(school_domain)
+
+
+def check_update(request):
+    force_update = False
+    norm_update = False
+    update_app_address = None
+    error_code = 0;
+    print(str(request.META.get('HTTP_SCHOOL', None)), file=sys.stderr)
+    print(str(request.META.get('HTTP_APP_VERSION', None)), file=sys.stderr)
+    print(str(request.META.get('HTTP_APP_DEVICE', None)), file=sys.stderr)
+    school_version = request.META.get('HTTP_APP_VERSION', None)
+    school_app_device = request.META.get('HTTP_APP_DEVICE', None)
+    school = get_school(request)
+    if school and school_version and school_app_device:
+        if version_compare(school.app_last_version, school_version) == 1:
+            norm_update = True
+            if version_compare(school.app_support_version, school_version) == 1:
+                force_update = True
+                error_code = 1
+            if school_app_device == 'android':
+                update_app_address = school.app_address
+        return error_code, {"school_relative_address": school.relative_address,
+                            "force_update": force_update,
+                            "norm_update": norm_update,
+                            "update_app_address": update_app_address,
+                            "update_app_message": school.app_update_message}
+    else:
+        error_code = 2
+        return error_code, None
+
 
 class CourseApiView(APIView):
     def get(self, request, pk):
+        error_code, data = check_update(request)
+        if error_code == 1:
+            return Response(data=data)
+        elif error_code == 2:
+            return HttpResponseBadRequest()
         school = School.objects.get(pk=pk)
         courses = school.courses.all()
         # serializer = CourseSerializer(Course.get_or_fail_by_pk(pk))
@@ -57,6 +99,11 @@ class CourseApiView(APIView):
 
 class LessonApiView(APIView):
     def get(self, request, pk):
+        error_code, data = check_update(request)
+        if error_code == 1:
+            return Response(data=data)
+        elif error_code == 2:
+            return HttpResponseBadRequest()
         course = Course.objects.get(pk=pk)
         lessons = course.lessons.all()
         serializer = LessonSerializer(lessons, many=True)
@@ -65,6 +112,11 @@ class LessonApiView(APIView):
 
 class PartApiView(APIView):
     def get(self, request, pk):
+        error_code, data = check_update(request)
+        if error_code == 1:
+            return Response(data=data)
+        elif error_code == 2:
+            return HttpResponseBadRequest()
         lesson = Lesson.objects.get(pk=pk)
         parts = lesson.parts.all()
         serializer = PartSerializer(parts, many=True)
@@ -78,7 +130,7 @@ class AllSchoolsApiView(APIView):
         return Response(data=serializer.data)
 
 
-# class SchoolsApiView(APIView):
-# def get(self, request, pk):
-    #     serializer = SchoolSerializer(School.get_or_fail_by_pk(pk))
-    #     return Response(data=serializer.data)
+class SchoolApiView(APIView):
+    def get(self, request):
+        _, data = check_update(request)
+        return Response(data=data)
