@@ -132,5 +132,7 @@ class AllSchoolsApiView(APIView):
 
 class SchoolApiView(APIView):
     def get(self, request):
-        _, data = check_update(request)
+        error_code, data = check_update(request)
+        if error_code == 2:
+            return HttpResponseBadRequest()
         return Response(data=data)
